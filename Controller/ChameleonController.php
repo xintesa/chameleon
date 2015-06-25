@@ -13,11 +13,11 @@ class ChameleonController extends ChameleonAppController {
 
 	public function admin_logged_as($id = null) {
 		$this->autoRender = false;
-		$formerId = $this->Session->read('Auth.User.id');
+		$formerUser = $this->Session->read('Auth.User');
 		if (!empty($id)) {
 			$user = $this->_User->findById($id);
 			if ($this->Auth->login($user['User'])) {
-				$this->Session->write('Auth.Admin.id', $formerId);
+				$this->Session->write('Chameleon.User', $formerUser);
 				$this->Session->setFlash(__d('Chameleon', 'Switched to %s', $user['User']['name']), 'flash', array('class' => 'success'));
 			} else {
 				$this->Session->setFlash(__d('Chameleon', 'failed to switch User'), 'flash', array('class' => 'error'));
@@ -27,16 +27,14 @@ class ChameleonController extends ChameleonAppController {
 	}
 
 	public function admin_restore_login() {
-		$formerId = $this->Session->write('Auth.Admin.id');
-		$user = $this->_User->findById($formerId);
-		$this->Session->delete('Auth.Admin.id');
-		if ($this->Auth->login($user)) {
-			return $this->redirect(array(
-				'admin' => 'true',
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'index'
-			));
+		$formerUser = $this->Session->read('Chameleon.User');
+		if (empty($formerUser)) {
+			$this->Session->setFlash('Invalid request', 'flash', array('class' => 'error'));
+			return $this->redirect('/');
+		}
+		$this->Session->delete('Chameleon.User');
+		if ($this->Auth->login($formerUser)) {
+			return $this->redirect(Configure::read('Croogo.dashboardUrl'));
 		};
 	}
 }
