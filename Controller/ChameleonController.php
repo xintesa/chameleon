@@ -12,7 +12,7 @@ class ChameleonController extends ChameleonAppController {
 		$this->Auth->allow('admin_restore_login');
 	}
 
-	public function admin_logged_as($id = null) {
+	public function admin_login_as($id = null) {
 		$this->autoRender = false;
 		$formerUser = $this->Session->read('Auth.User');
 		if (!empty($id)) {
