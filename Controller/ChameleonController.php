@@ -9,6 +9,7 @@ class ChameleonController extends ChameleonAppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->_User = ClassRegistry::init('Users.User');
+		$this->Auth->allow('admin_restore_login');
 	}
 
 	public function admin_logged_as($id = null) {
