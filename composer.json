@@ -1,0 +1,16 @@
+{
+	"name": "xintesa/chameleon",
+	"type": "cakephp-plugin",
+	"description": "User switching for admins",
+	"homepage": "http://github.com/xintesa/chameleon",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Xintesa",
+			"email": "oss@xintesa.com"
+		}
+	],
+	"require": {
+		"croogo/croogo": "~2.0"
+	}
+}
