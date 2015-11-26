@@ -17,6 +17,10 @@ class ChameleonController extends ChameleonAppController {
 		$formerUser = $this->Session->read('Auth.User');
 		if (!empty($id)) {
 			$user = $this->_User->findById($id);
+			if (isset($user['Role']) && isset($user['User'])) {
+				$user['User']['Role'] = $user['Role'];
+				unset($user['Role']);
+			}
 			if ($this->Auth->login($user['User'])) {
 				$this->Session->write('Chameleon.User', $formerUser);
 				$this->Session->setFlash(__d('Chameleon', 'Switched to %s', $user['User']['name']), 'flash', array('class' => 'success'));
