@@ -21,6 +21,7 @@ class ChameleonController extends ChameleonAppController {
 				$user['User']['Role'] = $user['Role'];
 				unset($user['Role']);
 			}
+			Croogo::dispatchEvent('Controller.Chameleon.adminLoginAs', $this);
 			if ($this->Auth->login($user['User'])) {
 				$this->Session->write('Chameleon.User', $formerUser);
 				$this->Session->setFlash(__d('Chameleon', 'Switched to %s', $user['User']['name']), 'flash', array('class' => 'success'));
@@ -38,6 +39,7 @@ class ChameleonController extends ChameleonAppController {
 			return $this->redirect('/');
 		}
 		$this->Session->delete('Chameleon.User');
+			Croogo::dispatchEvent('Controller.Chameleon.adminRestoreLogin', $this);
 		if ($this->Auth->login($formerUser)) {
 			return $this->redirect(Configure::read('Croogo.dashboardUrl'));
 		};
