@@ -21,11 +21,13 @@ class ChameleonController extends ChameleonAppController {
 				$user['User']['Role'] = $user['Role'];
 				unset($user['Role']);
 			}
-			Croogo::dispatchEvent('Controller.Chameleon.adminLoginAs', $this);
+			Croogo::dispatchEvent('Controller.Users.beforeAdminLogin', $this);
 			if ($this->Auth->login($user['User'])) {
+				Croogo::dispatchEvent('Controller.Users.adminLoginSuccessful', $this);
 				$this->Session->write('Chameleon.User', $formerUser);
 				$this->Session->setFlash(__d('Chameleon', 'Switched to %s', $user['User']['name']), 'flash', array('class' => 'success'));
 			} else {
+				Croogo::dispatchEvent('Controller.Users.adminLoginFailure', $this);
 				$this->Session->setFlash(__d('Chameleon', 'failed to switch User'), 'flash', array('class' => 'error'));
 			}
 		}
@@ -38,9 +40,12 @@ class ChameleonController extends ChameleonAppController {
 			$this->Session->setFlash('Invalid request', 'flash', array('class' => 'error'));
 			return $this->redirect('/');
 		}
-		$this->Session->delete('Chameleon.User');
-			Croogo::dispatchEvent('Controller.Chameleon.adminRestoreLogin', $this);
+		if ($this->Session->delete('Chameleon.User')) {
+			Croogo::dispatchEvent('Controller.Users.adminLogoutSuccessful', $this);
+		}
+		Croogo::dispatchEvent('Controller.Chameleon.beforeAdminLogin', $this);
 		if ($this->Auth->login($formerUser)) {
+			Croogo::dispatchEvent('Controller.Users.adminLoginSuccessful', $this);
 			return $this->redirect(Configure::read('Croogo.dashboardUrl'));
 		};
 	}
