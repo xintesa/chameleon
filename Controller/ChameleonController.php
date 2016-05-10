@@ -6,6 +6,8 @@ class ChameleonController extends ChameleonAppController {
 
 	public $_User;
 
+	public $uses = false;
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->_User = ClassRegistry::init('Users.User');
